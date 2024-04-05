@@ -48,12 +48,12 @@
         {% endif %}
         <br>
         {% if listing.images.all %}
-            <div id="image-carousel-{{ listing.id }}" class="carousel slide" style="height: 300px;">
+            <div id="image-carousel" class="carousel slide" style="height: 300px;">
                 <div class="carousel-inner">
                     {% for image in listing.images.all %}
                         <div class="carousel-item {% if forloop.first %}active{% endif %}">
                             <a href="/{{ listing.id }}">
-                                <img style="margin-left: 30%;" src="{{ image.image.url }}" class="listing-image-main" alt="Listing Image">
+                                <img style="margin-left: 31%;" src="{{ image.image.url }}" class="listing-image" alt="Listing Image">
                             </a>
                         </div>
                     {% endfor %}

@@ -1,0 +1,7 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    Succesfully closed your listing: {{ listing.title }}
+    <br>
+    <a href="/{{listing.id}}">Back to page</a>
+{% endblock %}

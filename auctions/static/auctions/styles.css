@@ -1,0 +1,114 @@
+body {
+    padding: 10px;
+}
+
+.listing-detail {
+    display: inline; /* Ensures the <h2> element takes only the necessary width */
+    cursor: pointer; /* Changes the cursor to a pointer on hover */
+    position: relative;
+    z-index: 10;
+}
+
+.listing-links {
+    position: relative;
+    z-index: 10;
+}
+
+.listing-detail:hover {
+    text-decoration: underline; /* Adds underline on hover */
+}
+
+.listing-image{
+    min-width: 350px;
+    min-height: 350px;
+    max-width: 500px;
+    max-height: 490.5px;
+}
+
+.default-image{
+    min-width: 200px;
+    min-height: 200px;
+}
+
+.listing{
+    margin-bottom: 40px;
+    padding: 10px;
+    padding-bottom: 40px;
+    border: 1px solid gray;
+}
+
+.Description-main{
+    width: 50%;
+}
+
+.price{
+    color: green;
+}
+
+.description-preview{
+    margin: 0;
+}
+
+
+.carousel-control-prev,
+.carousel-control-next {
+    width: 50px;
+    height: 50px;   
+    top: 100px;
+    
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    width: 80px;
+    height: 50px;
+    background-size: 100% 100%;
+}
+
+.carousel-control-prev {
+    background-color: gold;
+}
+.carousel-control-next {
+    background-color: green;
+}
+
+.carousel-item {
+    justify-content: center;
+    align-items: flex-start;
+}
+
+
+.listing-image-main{
+    min-width: 400px;
+    min-height: 400px;
+    max-width: 550px;
+    max-height: 550px;
+    position: relative;
+    z-index: 0;
+}
+
+.description-container {
+    max-width: 30%; /* Adjust the percentage as per your preference */
+}
+
+.description-text {
+    word-wrap: break-word; /* Make the text wrap at word boundaries */
+}
+
+.description-container-lp {
+    max-width: 80%; /* Adjust the percentage as per your preference */
+}
+
+.drag-over {
+    border: 2px dashed #aaa;
+}
+#image-input-container {
+    width: 800px;
+    min-height: 150px;
+    background-color: #878787;
+}
+
+.listing-title {
+    font-size: 23px;
+}
+

@@ -1,0 +1,85 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Create Listing</h2>
+    <br>
+    <form method="post" action="create_listing" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="create-form">
+            {{ form.title.label_tag }} <br>
+            {{ form.title }}
+        </div><br>
+        <div class="create-form">
+            {{ form.initial_price.label_tag }}
+            {{ form.initial_price }}
+        </div><br>
+        <div class="create-form">
+            {{ form.image.label_tag }}
+            <small style="color: gray">Drag and drop your image(s) below</small>
+            <div id="image-input-container">
+                {{ form.image }}
+            </div>
+        </div>
+        <br><br>
+        <div class="create-form">
+            {{ form.category.label_tag }}
+            {{ form.category }}
+        </div><br>
+        <div class="create-form">
+            {{ form.description.label_tag }} <br>
+            {{ form.description }}
+        </div>
+        <button class="btn btn-primary" type="submit">Create listing</button>
+    </form>
+
+    <script>
+        let isInitialDrop = true;
+
+        function initDragAndDrop(container) {
+            container.addEventListener('dragover', (event) => {
+                event.preventDefault();
+                container.classList.add('drag-over');
+            });
+
+            container.addEventListener('dragleave', (event) => {
+                event.preventDefault();
+                container.classList.remove('drag-over');
+            });
+
+            container.addEventListener('drop', (event) => {
+                event.preventDefault();
+                container.classList.remove('drag-over');
+
+                if (isInitialDrop) {
+                    // Remove the initial input field on the first drop
+                    container.innerHTML = '';
+                    isInitialDrop = false;
+                }
+
+                const file = event.dataTransfer.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.name = 'image';
+                    input.files = event.dataTransfer.files;
+                    container.appendChild(input);
+                }
+            });
+        }
+
+        // Initialize drag-and-drop for existing image input
+        const mainImageContainer = document.querySelector('#image-input-container');
+        initDragAndDrop(mainImageContainer);
+    </script>
+
+    <style>
+        .drag-over {
+            border: 2px dashed #aaa;
+        }
+
+        #image-input-container {
+            max-width: fit-content;
+            background-color: #878787;
+        }
+    </style>
+{% endblock %}

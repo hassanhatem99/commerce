@@ -1,0 +1,24 @@
+{% extends "auctions/layout.html" %}
+{% load custom_filters %}
+
+{% block body %}
+    <h2>Listing: {{ listing.title }}</h2>
+    <br>
+        <form method="post">
+            {% csrf_token %}
+                {{ form.text }}
+                <br>
+                <button style="margin-left: 140px;" class="btn btn-primary" type="submit">Post Comment</button>            
+        </form>
+        <br>
+
+        <h4>Comments:</h4>
+        {% if not comments %}
+            No comments yet
+        {% endif %}
+        {% for comment in comments %}
+            <strong> <a href="/seller_listings/{{ comment.commentor }}">{{ comment.commentor }}</a>:</strong> {{ comment.text }} 
+            <small style="color: gray; margin-left: 30px;">{{ comment.time_created|custom_localtime|custom_timesince }}</small>
+            <br><br>
+        {% endfor %}
+{% endblock %}

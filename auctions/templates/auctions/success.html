@@ -1,0 +1,20 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    {{ listing.highest_bid }}$ bid succesfully placed!
+    <br>
+    <a href="/{{listing.id}}">Back to page</a>
+{% endblock %}
+
+
+
+
+{% block form %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group nav-link">
+            {{search_form}}
+            <button type="submit">{{ search_icon }}</button>
+        </div>
+    </form> 
+{% endblock %}

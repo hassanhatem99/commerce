@@ -1,0 +1,129 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+{% load custom_filters %}
+
+
+
+{% block body %}
+<div>
+
+
+    <h2>Watchlist</h2>
+    {% if watchlist_items %}
+        <ul>
+            {% for watchlist_item in watchlist_items %}
+            <li id="listing-{{ watchlist_item.listing.id }}" class="listing">
+                <a href="/{{ watchlist_item.listing.id }}">
+                    <h2>
+                        <a class="listing-detail listing-title" href="/{{ watchlist_item.listing.id }}">{{ watchlist_item.listing.title }}</a> 
+                    </h2>
+                    {% if watchlist_item.listing.images.all %}
+                            <div id="image-carousel-{{ watchlist_item.listing.id }}" class="carousel slide" style="height: 300px;">
+                                <div class="carousel-inner">
+                                    {% for image in watchlist_item.listing.images.all %}
+                                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                            <a href="/{{ watchlist_item.listing.id }}">
+                                                <img style="margin-left: 31%;" src="{{ image.image.url }}" class="listing-image" alt="Listing Image">
+                                            </a>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                {% if watchlist_item.listing.images.all|length > 1 %}
+                                <button class="carousel-control-prev" type="button" data-bs-target="#image-carousel-{{ watchlist_item.listing.id }}" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#image-carousel-{{ watchlist_item.listing.id }}" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon"></span>
+                                </button>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            <a class="listing-detail" href="/{{ watchlist_item.listing.id }}">
+                                <img src="{% static 'auctions/images/default.jpg' %}" alt="Default Image" class="default-image">
+                            </a>
+                            <br>
+                        {% endif %}
+                </a>
+                <small style="color: gray;">Created: {{ watchlist_item.listing.time_created|custom_localtime|custom_timesince }}</small>
+                <br>
+                Current Price: <strong class="price">${{ watchlist_item.listing.highest_bid }}</strong>
+                <br>
+                <div class="listing-links">
+                    Listed by: <strong><a href="seller_listings/{{watchlist_item.listing.seller}}">{{ watchlist_item.listing.seller }}</a></strong>
+                    <br>
+                    {% if watchlist_item.listing.description != '' %}
+                        <details class="description-preview">
+                            <summary>Show Description</summary>
+                            .<br>.<br>.<br>.<br>
+                            <div class="description-container">
+                                <strong>Description:</strong>
+                                <br>
+                                <div class="description-text">{{ watchlist_item.listing.description|linebreaksbr }}</div>
+                            </div>
+                        </details>
+                    {% else %}
+                        No Description
+                        <br>
+                    {% endif %}
+                    <br>
+                        <a href="/{{ watchlist_item.listing.id }}/remove"><button class="remove-watchlist-btn btn btn-danger btn-sm">Remove from Watchlist</button></a>
+                    <br>
+                </div>
+                
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        Your watchlist items will appear here.
+    {% endif %}
+</div>
+
+<script>
+    // Function to store the scroll position in local storage
+    function storeScrollPosition() {
+        localStorage.setItem("watchlistScrollPosition", window.scrollY);
+    }
+
+    // Function to scroll to the stored position
+    function scrollToStoredPosition() {
+        var scrollPosition = localStorage.getItem("watchlistScrollPosition");
+        if (scrollPosition !== null) {
+            window.scrollTo(0, scrollPosition);
+            localStorage.removeItem("watchlistScrollPosition"); // Remove the stored position after scrolling to it
+        }
+    }
+
+    // Attach the storeScrollPosition function to the click event of the "Remove from Watchlist" button
+    document.addEventListener("DOMContentLoaded", function() {
+        var removeButtons = document.querySelectorAll(".remove-watchlist-btn");
+        for (var i = 0; i < removeButtons.length; i++) {
+            removeButtons[i].addEventListener("click", storeScrollPosition);
+        }
+
+        // Scroll to the stored position after the page has fully loaded
+        scrollToStoredPosition();
+    });
+
+    // Continuously store the scroll position as the user scrolls the watchlist
+    document.addEventListener("scroll", storeScrollPosition);
+</script>
+{% endblock %}
+
+
+
+{% block form %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group nav-link">
+            {{search_form}}
+            <button type="submit">{{ search_icon }}</button>
+        </div>
+    </form> 
+{% endblock %}
+
+
+
+
+
+
+

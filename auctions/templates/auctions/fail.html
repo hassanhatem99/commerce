@@ -1,0 +1,23 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    {% if listing.is_closed %}
+        This listing is now closed :(
+    {% else %}
+        Please bid more than {{ listing.highest_bid }}$
+        <br>
+        <a href="/{{listing.id}}">Back to page</a>
+    {% endif %}
+{% endblock %}
+
+
+
+{% block form %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group nav-link">
+            {{search_form}}
+            <button type="submit">{{ search_icon }}</button>
+        </div>
+    </form> 
+{% endblock %}

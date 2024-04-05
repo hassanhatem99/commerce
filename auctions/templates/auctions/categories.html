@@ -1,0 +1,23 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Categories</h2>
+    <ul>
+        {% for category in categories %}
+        <li><a href="/categories/{{ category.0 }}">{{ category.0 }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+
+
+
+
+{% block form %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group nav-link">
+            {{search_form}}
+            <button type="submit">{{ search_icon }}</button>
+        </div>
+    </form> 
+{% endblock %}

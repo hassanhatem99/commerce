@@ -1,0 +1,131 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+{% load custom_filters %}
+{% load humanize %}
+
+{% block body %}
+    <h2>Listing: {{ listing.title }}</h2>
+    <ul>
+        <li>
+            
+            <price style="font-size: 50px; color: green;">${{ listing.highest_bid }}</price>
+        </li>
+        {% if user.username == listing.highest_bidder %}
+            {% if not listing.is_closed %}
+                <small>{{ total_bids }} bid(s) so far, your bid is the current bid!</small>
+            {% else %}
+                <small>{{ total_bids }} bid(s),</small>
+                <small>Congratulations!</small>
+            {% endif %}
+        {% elif listing.highest_bidder == 'No one yet' %}
+            {% if not listing.is_closed %}
+                <small>No bids yet</small>
+            {% else %}
+                <small>Auction closed with no bids</small>
+            {% endif %}
+        {% else %}
+            {% if not listing.is_closed %}
+                <small>{{ total_bids }} bid(s) so far, <strong><a href="/seller_listings/{{ listing.highest_bidder }}">{{ listing.highest_bidder }}</a></strong>'s bid is the current bid</small>
+            {% else %}
+                <small>{{ total_bids }} bid(s), <strong><a href="/seller_listings/{{ listing.highest_bidder }}">{{ listing.highest_bidder }}</a></strong> won the auction!
+            {% endif %}
+        {% endif %}
+        <br>
+        {% if user.username != listing.seller %}
+            {% if listing.is_closed %}
+                {% if user.username == listing.highest_bidder %}
+                    YOU WON THE AUCTION!
+                {% else %}
+                    This listing is closed :(
+                {% endif %}
+            {% else %}
+            <form method="post">
+                {% csrf_token %}
+                {{ form }}
+                <button class="btn btn-primary" type="submit">Place Bid</button>            
+            </form>
+            {% endif %}
+        {% endif %}
+        <br>
+        {% if listing.images.all %}
+            <div id="image-carousel-{{ listing.id }}" class="carousel slide" style="height: 300px;">
+                <div class="carousel-inner">
+                    {% for image in listing.images.all %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <a href="/{{ listing.id }}">
+                                <img style="margin-left: 30%;" src="{{ image.image.url }}" class="listing-image-main" alt="Listing Image">
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% if listing.images.all|length > 1 %}
+                <button class="carousel-control-prev" type="button" data-bs-target="#image-carousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#image-carousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+                {% endif %}
+            </div>
+        {% else %}
+            <a class="listing-detail" href="/{{ listing.id }}">
+                <img src="{% static 'auctions/images/default.jpg' %}" alt="Default Image" class="default-image">
+            </a>
+            <br>
+        {% endif %}
+        <br>
+        <div class="listing-links">
+            {% if listing.id in watchlist_items %}
+                <a href="/{{ listing.id }}/remove"><button class="remove-from-watchlist-btn btn btn-danger btn-sm">Remove from Watchlist</button></a>
+            {% else %}
+                <a href="/{{ listing.id }}/add"><button class="add-to-watchlist-btn btn btn-primary btn-sm">Add to Watchlist</button></a>
+            {% endif %}
+            <br><br>
+            <div style="color: gray;">Created: {{ listing.time_created }}</div>
+            <br><br>
+            <li>listed by: <strong><a href="/seller_listings/{{ listing.seller }}">{{ listing.seller }}</a></strong></li>
+            {% if listing.category %}
+                <li><strong>Category: </strong>{{ listing.category }}</li> 
+            {% else %}
+                <li><strong>Category: </strong>No category listed</li>
+            {% endif %}       
+            <br><br>
+            <li class="Description-main">
+                <strong>Description:</strong>
+                <div class="description-container-lp">
+                    {% if listing.description == '' %}
+                        No description
+                    {% endif %}
+                    <div class="description-text">{{ listing.description|linebreaksbr }}</div> 
+                </div>
+                
+                    <br><br>
+            </li>
+            <br><br>
+        </div>
+        
+        <a href="/{{ listing.id }}/comment"><button class="btn btn-outline-primary">Write a comment</button></a>
+        <br><br>
+        {% if not comments %}
+            No comments yet
+        {% endif %}
+        {% for comment in comments %}
+            <strong> <a href="/seller_listings/{{ comment.commentor }}">{{ comment.commentor }}</a>:</strong> {{ comment.text }}  
+            <small style="color: gray; margin-left: 30px;">{{ comment.time_created|custom_localtime|custom_timesince }}</small>
+            <br><br>
+        {% endfor %}
+
+        {% if comments|length > 10 %}
+        <a href="/{{ listing.id }}/comment"><button class="btn btn-outline-primary">View more comments </button></a>
+        {% endif %}
+        <br><br><br>
+        {% if user.username == listing.seller %}
+            {% if listing.is_closed %}
+                <button class="btn btn-secondary" disabled>Auction closed</button>
+            {% else %}
+                <a href="/{{ listing.id }}/close"><button class="btn btn-danger">Close Auction</button></a>
+            {% endif %}
+        {% endif %}
+    </ul>
+    <script src="{% static 'auctions/js/index.js' %}"></script>
+{% endblock %}
